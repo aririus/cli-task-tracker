@@ -95,19 +95,52 @@ def mark_task_status(task_id, status):
             print(f"Task {task_id} marked as {status}")
             return
     print(f"Task with ID {task_id} not found")
-        
+    
+def show_help():
+    print("""
+CLI Task Tracker – Help
+
+Usage:
+  tracker-cli <command> [arguments]
+
+Available Commands:
+  add <description>                Add a new task
+  list                             List all tasks
+  list <status>                    List tasks by status: todo, in-progress, done
+  update <id> <new description>    Update task description
+  delete <id>                      Delete a task by ID
+  mark-in-progress <id>            Mark a task as in progress
+  mark-done <id>                   Mark a task as done
+  help                             Show this help message
+
+Examples:
+  tracker-cli add "Buy groceries"
+  tracker-cli list
+  tracker-cli list done
+  tracker-cli update 2 "Buy groceries and cook"
+  tracker-cli mark-in-progress 2
+  tracker-cli mark-done 2
+  tracker-cli delete 2
+""")
+
 def main():
     if len(sys.argv) < 2:
-        print("Usage: python tracker-cli.py <command> [arguments]")
+        print("Usage: tracker-cli <command> [arguments]")
         return
 
     command = sys.argv[1]
 
     if command == 'add':
+        if len(sys.argv) < 3:
+            print("Usage: tracker-cli add <description>")
+            return
         description = ' '.join(sys.argv[2:])
         add_task(description)
         
     elif command == 'list':
+        if len(sys.argv) > 3:
+            print("Usage: tracker-cli list [status]")
+            return
         if len(sys.argv) == 3:
             status = sys.argv[2].lower()
             list_tasks(status)
@@ -116,7 +149,7 @@ def main():
 
     elif command == 'update':
         if len(sys.argv) < 4:
-            print("Usage: python tracker-cli.py update <id> <new description>")
+            print("Usage: tracker-cli update <id> <new description>")
             return
         try:
             task_id = int(sys.argv[2])
@@ -128,7 +161,7 @@ def main():
 
     elif command == 'delete':
         if len(sys.argv) != 3:
-            print("Usage: python tracker-cli.py delete <id>")
+            print("Usage: tracker-cli delete <id>")
         try:
             task_id = int(sys.argv[2])
         except ValueError:
@@ -138,7 +171,7 @@ def main():
     
     elif command == 'mark-in-progress':
         if len(sys.argv) != 3:
-            print("Usage: python task_cli.py mark-in-progress <id>")
+            print("Usage: tracker-cli mark-in-progress <id>")
             return
         try:
             task_id = int(sys.argv[2])
@@ -149,7 +182,7 @@ def main():
         
     elif command == 'mark-done':
         if len(sys.argv) != 3:
-            print("Usage: python task_cli.py mark-done <id>")
+            print("Usage: tracker-cli mark-done <id>")
             return
         try:
             task_id = int(sys.argv[2])
@@ -157,9 +190,12 @@ def main():
             print("Task ID must be a number")
             return
         mark_task_status(task_id, "done")
+        
+    elif command == 'help':
+        show_help()
 
     else:
-        print(f"Unknown command: {command}")
+        print(f"Unknown command: {command}\nSee 'tracker-cli help' for usage")
 
 if __name__ == '__main__':
     main()
